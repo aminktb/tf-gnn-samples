@@ -6,7 +6,7 @@ import tensorflow as tf
 from dpu_utils.utils import RichPath, LocalPath
 
 from .sparse_graph_task import Sparse_Graph_Task, DataFold, MinibatchData
-from utils.citation_network_utils import load_data, preprocess_features
+from utils.job_network_utils import load_data
 
 
 CitationData = namedtuple(
@@ -34,7 +34,7 @@ class Job_Task(Sparse_Graph_Task):
 
     @staticmethod
     def default_data_path() -> str:
-        return "data/citation-networks"
+        return "data/job-network"
 
     def __init__(self, params: Dict[str, Any]):
         super().__init__(params)
@@ -88,10 +88,10 @@ class Job_Task(Sparse_Graph_Task):
             train_mask,
             valid_mask,
             test_mask,
-        ) = load_data(data_path, self.params["data_kind"])
+        ) = load_data(data_path)
         self.__initial_node_feature_size = features.shape[1]
         self.__num_output_classes = train_labels.shape[1]
-        features = preprocess_features(features)
+        # features = preprocess_features(features)
 
         train_data = [
             self.__preprocess_data(
@@ -118,9 +118,9 @@ class Job_Task(Sparse_Graph_Task):
         num_incoming_edges = np.zeros(shape=[len(adj_list)], dtype=np.int32)
         for node, neighbours in adj_list.items():
             for neighbour in neighbours:
-                flat_adj_list.append((node, neighbour))
+                # flat_adj_list.append((node, neighbour))
                 flat_adj_list.append((neighbour, node))
-                num_incoming_edges[neighbour] += 1
+                # num_incoming_edges[neighbour] += 1
                 num_incoming_edges[node] += 1
             self_loop_adj_list.append((node, node))
 
